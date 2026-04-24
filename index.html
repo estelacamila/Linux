@@ -4,56 +4,90 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulador IA - Projeto Escolar</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     
     <style>
-        /* ESTILOS GERAIS */
-        body { background: linear-gradient(135deg, #1e091d 0%, #300a24 50%, #4a154b 100%); color: #ffffff; font-family: 'Poppins', sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
-        .header { text-align: center; margin-bottom: 20px; animation: fadeInDown 1s ease-out; }
-        .header h1 { color: #E95420; margin: 0; font-size: 2.5rem; text-shadow: 0px 0px 15px rgba(233, 84, 32, 0.4); }
-        .header p { margin: 5px 0; color: #d1d1d1; font-weight: 300; }
+        /* ESTILOS GERAIS E CORES */
+        :root {
+            --bg-color: #1e091d;
+            --primary: #E95420; /* Ubuntu Orange */
+            --term-bg: rgba(15, 15, 15, 0.95);
+            --text-main: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --accent-green: #8ae234;
+            --accent-blue: #729fcf;
+            --accent-yellow: #fce94f;
+            --accent-top5: #ffbd2e;
+            --glass-bg: rgba(255, 255, 255, 0.04);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
 
-        /* GRID E TERMINAL */
-        .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; width: 100%; max-width: 1200px; animation: fadeIn 1.5s ease-out; }
-        .terminal-container { background-color: rgba(10, 10, 10, 0.85); border-radius: 16px; box-shadow: 0 20px 50px rgba(0,0,0,0.6); overflow: hidden; display: flex; flex-direction: column; height: 550px; border: 1px solid rgba(255,255,255,0.1); }
-        .terminal-header { background-color: rgba(255,255,255,0.05); padding: 15px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .btn-circle { width: 14px; height: 14px; border-radius: 50%; box-shadow: inset 0 1px 2px rgba(0,0,0,0.5); }
+        body { 
+            background: linear-gradient(135deg, #130613 0%, #2a0820 50%, #3d103e 100%); 
+            color: #ffffff; font-family: 'Poppins', sans-serif; margin: 0; padding: 30px 20px; 
+            display: flex; flex-direction: column; align-items: center; min-height: 100vh; box-sizing: border-box;
+        }
+
+        .header { text-align: center; margin-bottom: 30px; animation: fadeInDown 0.8s ease-out; }
+        .header h1 { color: var(--primary); margin: 0; font-size: 2.8rem; font-weight: 600; text-shadow: 0px 4px 20px rgba(233, 84, 32, 0.4); letter-spacing: -0.5px;}
+        .header p { margin: 5px 0; color: #d1d1d1; font-weight: 300; font-size: 1.1rem; opacity: 0.8;}
+
+        /* GRID: Terminal maior que painéis */
+        .dashboard { display: grid; grid-template-columns: 1.3fr 1fr; gap: 25px; width: 100%; max-width: 1300px; animation: fadeIn 1.2s ease-out; }
+
+        /* TERMINAL */
+        .terminal-container { background-color: var(--term-bg); border-radius: 12px; box-shadow: 0 25px 50px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.05); overflow: hidden; display: flex; flex-direction: column; height: 620px; }
+        .terminal-header { background-color: #2b2b2b; padding: 12px 15px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid rgba(0,0,0,0.5); }
+        .btn-circle { width: 12px; height: 12px; border-radius: 50%; }
         .btn-close { background-color: #ff5f56; } .btn-min { background-color: #ffbd2e; } .btn-max { background-color: #27c93f; }
-        .terminal-title { margin-left: auto; margin-right: auto; color: #888; font-size: 13px; font-family: 'Fira Code', monospace; }
-        .terminal-body { padding: 20px; flex-grow: 1; overflow-y: auto; font-family: 'Fira Code', monospace; font-size: 14px; color: #e0e0e0; line-height: 1.5; }
+        .terminal-title { margin: 0 auto; color: #999; font-size: 13px; font-weight: 500; font-family: 'Poppins', sans-serif; }
         
-        .prompt-user { color: #8ae234; font-weight: 500; text-shadow: 0 0 5px rgba(138, 226, 52, 0.3);}
-        .prompt-dir { color: #729fcf; font-weight: 500; }
-        .input-row { display: flex; align-items: center; margin-top: 10px; }
-        #cmd-input { background: transparent; border: none; color: #fff; font-family: inherit; font-size: inherit; flex-grow: 1; margin-left: 10px; outline: none; }
+        .terminal-body { padding: 25px; flex-grow: 1; overflow-y: auto; font-family: 'Fira Code', monospace; font-size: 14.5px; color: var(--text-main); line-height: 1.6; }
+        .prompt-user { color: var(--accent-green); font-weight: 600; }
+        .prompt-dir { color: var(--accent-blue); font-weight: 600; }
+        .input-row { display: flex; align-items: center; margin-top: 15px; }
+        #cmd-input { background: transparent; border: none; color: #fff; font-family: inherit; font-size: inherit; font-weight: 500; flex-grow: 1; margin-left: 10px; outline: none; }
+        .cmd-block { margin-bottom: 15px; }
 
-        /* PAINEL LATERAL VIDRO */
-        .info-panel { display: flex; flex-direction: column; gap: 25px; height: 550px;}
-        .glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); padding: 25px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow-y: auto; }
-        
-        .card-audit { height: 150px; flex-shrink: 0;}
+        /* PAINÉIS LATERAIS (VIDRO) */
+        .info-panel { display: flex; flex-direction: column; gap: 25px; height: 620px;}
+        .glass-card { background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); padding: 25px; border-radius: 12px; box-shadow: 0 15px 35px rgba(0,0,0,0.2); overflow-y: auto; position: relative; }
+        .card-audit { height: 180px; flex-shrink: 0; display: flex; flex-direction: column;}
         .card-glossary { flex-grow: 1; }
 
-        .glass-card h3 { margin-top: 0; color: #E95420; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; font-weight: 600; font-size: 16px;}
-        .glass-card p { font-size: 13px; color: #bbb; line-height: 1.6;}
+        .glass-card h3 { margin: 0 0 15px 0; color: var(--primary); font-weight: 600; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;}
         
-        #live-log { list-style-type: none; padding: 0; margin: 0; font-family: 'Fira Code', monospace; font-size: 12px; color: #f8c555; }
-        #live-log li { margin-bottom: 8px; padding-bottom: 5px; border-bottom: 1px dashed rgba(255,255,255,0.1); animation: slideIn 0.3s ease-out; }
-        code { background-color: rgba(0,0,0,0.3); padding: 2px 5px; border-radius: 4px; color: #a6e22e; font-family: 'Fira Code', monospace; font-size: 12px;}
+        /* BOTÃO DE LIMPAR */
+        .btn-limpar { position: absolute; top: 22px; right: 25px; background: rgba(255, 95, 86, 0.15); border: 1px solid rgba(255, 95, 86, 0.4); color: #ff5f56; padding: 5px 12px; border-radius: 20px; cursor: pointer; font-size: 11px; font-weight: 600; font-family: 'Poppins', sans-serif; transition: all 0.2s ease; }
+        .btn-limpar:hover { background: #ff5f56; color: #fff; box-shadow: 0 4px 10px rgba(255, 95, 86, 0.3);}
+
+        /* LOG DE AUDITORIA */
+        .log-container { flex-grow: 1; overflow-y: auto; padding-right: 5px; }
+        #live-log { list-style-type: none; padding: 0; margin: 0; font-family: 'Fira Code', monospace; font-size: 12px; color: var(--text-muted); }
+        #live-log li { margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,0.05); animation: slideIn 0.3s ease-out; display: flex; gap: 8px;}
+        #live-log li::before { content: '>'; color: var(--accent-green); font-weight: bold;}
 
         /* ESTILOS DO GLOSSÁRIO */
-        .glossary-list { list-style: none; padding: 0; margin: 0; font-size: 12px; color: #d1d1d1; }
-        .glossary-list li { margin-bottom: 8px; line-height: 1.4; }
-        .glossary-category { color: #729fcf; font-weight: 600; margin-top: 15px; margin-bottom: 8px; font-size: 14px;}
+        .glossary-category { background: rgba(114, 159, 207, 0.1); color: var(--accent-blue); font-weight: 600; padding: 6px 12px; border-radius: 6px; margin: 20px 0 12px 0; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;}
+        .glossary-category:first-of-type { margin-top: 0; }
+        .cat-top5 { background: rgba(233, 84, 32, 0.2); color: var(--primary); border: 1px solid rgba(233, 84, 32, 0.3); }
+
+        .glossary-list { list-style: none; padding: 0; margin: 0; font-size: 13px; color: #ccc; }
+        .glossary-list li { margin-bottom: 12px; line-height: 1.4; display: flex; align-items: baseline; gap: 10px;}
+        
+        /* TAGS DE COMANDOS */
+        .cmd-tag { background-color: rgba(138, 226, 52, 0.15); color: var(--accent-green); font-family: 'Fira Code', monospace; font-weight: 600; font-size: 12px; padding: 3px 8px; border-radius: 6px; border: 1px solid rgba(138, 226, 52, 0.3); white-space: nowrap;}
+        .tag-top5 { background-color: rgba(252, 233, 79, 0.15); color: var(--accent-yellow); border: 1px solid var(--accent-yellow); }
 
         /* ESTILO DA DICA NO TERMINAL */
-        .cmd-hint { color: #a6e22e; font-size: 12px; font-style: italic; margin-bottom: 8px; opacity: 0.9; }
+        .cmd-hint { color: #d3d7cf; font-family: 'Poppins', sans-serif; font-size: 13px; margin: 6px 0 12px 0; background: rgba(252, 233, 79, 0.08); border-left: 3px solid var(--accent-yellow); padding: 8px 12px; border-radius: 0 6px 6px 0;}
+        .cmd-hint b { color: var(--accent-yellow); font-weight: 600;}
 
         /* ANIMAÇÕES E SCROLLBAR */
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
-        ::-webkit-scrollbar { width: 8px; } ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); } ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; } ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-5px); } to { opacity: 1; transform: translateX(0); } }
+        ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; } ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
     </style>
 </head>
 <body>
@@ -73,10 +107,12 @@
                 <div class="terminal-title">estela@ubuntu-ai-sim: ~</div>
             </div>
             <div class="terminal-body" id="term-body" onclick="document.getElementById('cmd-input').focus()">
-                <div style="color: #bbb;">Ubuntu 22.04 LTS (GNU/Linux 5.15.0-virtual x86_64)</div><br>
-                <div>* Bem-vinda, Estela, ao ambiente de simulação educacional.</div>
-                <div>* Digite <code>help</code> para testar a IA.</div><br>
+                <div style="color: var(--text-muted); margin-bottom: 15px;">Ubuntu 22.04 LTS (GNU/Linux 5.15.0-virtual x86_64)</div>
+                <div style="color: var(--accent-green);">✓ Bem-vinda, Estela! O ambiente de simulação está pronto.</div>
+                <div style="color: var(--text-muted); margin-bottom: 20px;">✓ Digite qualquer comando da lista ao lado para ver como ele funciona na prática.</div>
+                
                 <div id="term-output"></div>
+                
                 <div class="input-row">
                     <span class="prompt-user">estela@ubuntu-ai-sim</span>:<span class="prompt-dir" id="prompt-path">~</span>$ 
                     <input type="text" id="cmd-input" autocomplete="off" spellcheck="false" autofocus>
@@ -87,67 +123,72 @@
         <div class="info-panel">
             <div class="glass-card card-audit">
                 <h3>🛡️ Monitor de Auditoria</h3>
-                <p style="font-size: 11px; margin-top: -5px;">Lendo <code>/var/log/sim_audit.log</code>.</p>
-                <ul id="live-log"></ul>
+                <button class="btn-limpar" id="btn-clear-log">Limpar Log</button>
+                <div class="log-container">
+                    <ul id="live-log"></ul>
+                </div>
             </div>
 
             <div class="glass-card card-glossary">
                 <h3>📖 Dicionário de Comandos (40)</h3>
-                <p style="font-size: 11px; margin-top: -5px;">Role para baixo para ver a função de cada comando.</p>
                 
-                <div class="glossary-category">30 Comandos Básicos (Sistema)</div>
+                <div class="glossary-category cat-top5"></div>
                 <ul class="glossary-list">
-                    <li><code>ls</code>: Lista os arquivos e pastas no diretório.</li>
-                    <li><code>cd</code>: Entra ou sai de pastas (navegação).</li>
-                    <li><code>pwd</code>: Mostra o caminho da pasta atual.</li>
-                    <li><code>mkdir</code>: Cria uma nova pasta.</li>
-                    <li><code>rmdir</code>: Apaga uma pasta vazia.</li>
-                    <li><code>rm</code>: Apaga arquivos (ou pastas com -r).</li>
-                    <li><code>cp</code>: Copia arquivos de um lugar para outro.</li>
-                    <li><code>mv</code>: Move ou renomeia arquivos.</li>
-                    <li><code>touch</code>: Cria um arquivo vazio.</li>
-                    <li><code>cat</code>: Lê o conteúdo de um arquivo na tela.</li>
-                    <li><code>less</code>: Lê arquivos permitindo rolagem.</li>
-                    <li><code>head</code>: Mostra as 10 primeiras linhas de um arquivo.</li>
-                    <li><code>tail</code>: Mostra as 10 últimas linhas de um arquivo.</li>
-                    <li><code>grep</code>: Busca palavras dentro de arquivos.</li>
-                    <li><code>find</code>: Procura por arquivos no computador.</li>
-                    <li><code>chmod</code>: Altera permissões de leitura/escrita.</li>
-                    <li><code>chown</code>: Muda o dono do arquivo.</li>
-                    <li><code>echo</code>: Imprime um texto na tela.</li>
-                    <li><code>man</code>: Abre o manual de um comando.</li>
-                    <li><code>history</code>: Mostra o histórico do terminal.</li>
-                    <li><code>clear</code>: Limpa a tela do terminal.</li>
-                    <li><code>sudo</code>: Executa comando como administrador.</li>
-                    <li><code>apt</code>: Instala ou remove programas.</li>
-                    <li><code>tar</code>: Compacta/descompacta pacotes .tar.</li>
-                    <li><code>gzip</code>: Comprime arquivos para poupar espaço.</li>
-                    <li><code>unzip</code>: Descompacta arquivos .zip.</li>
-                    <li><code>df</code>: Exibe o uso de espaço no disco rígido.</li>
-                    <li><code>du</code>: Exibe o tamanho de pastas/arquivos.</li>
-                    <li><code>top</code>: Monitora uso de CPU e Memória ao vivo.</li>
-                    <li><code>ps</code>: Lista os processos rodando no fundo.</li>
+                    <li><span class="cmd-tag tag-top5">pwd</span> <span><b>Localização:</b> Mostra em qual pasta você está.</span></li>
+                    <li><span class="cmd-tag tag-top5">mkdir</span> <span><b>Criação:</b> Cria uma nova pasta no sistema.</span></li>
+                    <li><span class="cmd-tag tag-top5">ls</span> <span><b>Lista:</b> Mostra o que tem dentro da pasta atual.</span></li>
+                    <li><span class="cmd-tag tag-top5">echo</span> <span><b>Mensagem:</b> Escreve na tela o que você digitou.</span></li>
+                    <li><span class="cmd-tag tag-top5">clear</span> <span><b>Limpeza:</b> Limpa a tela inteira do terminal.</span></li>
+                </ul>
+
+                <div class="glossary-category">25 Comandos Básicos (Sistema)</div>
+                <ul class="glossary-list">
+                    <li><span class="cmd-tag">cd</span> <span>Entra ou sai de uma pasta (ex: cd documentos).</span></li>
+                    <li><span class="cmd-tag">rmdir</span> <span>Apaga uma pasta que esteja vazia.</span></li>
+                    <li><span class="cmd-tag">rm</span> <span>Apaga um arquivo definitivamente.</span></li>
+                    <li><span class="cmd-tag">cp</span> <span>Copia um arquivo para outro lugar.</span></li>
+                    <li><span class="cmd-tag">mv</span> <span>Move ou troca o nome de um arquivo.</span></li>
+                    <li><span class="cmd-tag">touch</span> <span>Cria um arquivo em branco.</span></li>
+                    <li><span class="cmd-tag">cat</span> <span>Mostra todo o texto que está dentro de um arquivo.</span></li>
+                    <li><span class="cmd-tag">less</span> <span>Abre o arquivo para leitura permitindo rolar a tela.</span></li>
+                    <li><span class="cmd-tag">head</span> <span>Mostra apenas as primeiras linhas do arquivo.</span></li>
+                    <li><span class="cmd-tag">tail</span> <span>Mostra apenas o final do arquivo.</span></li>
+                    <li><span class="cmd-tag">grep</span> <span>Procura uma palavra específica dentro do arquivo.</span></li>
+                    <li><span class="cmd-tag">find</span> <span>Faz uma pesquisa por arquivos no computador.</span></li>
+                    <li><span class="cmd-tag">chmod</span> <span>Muda as permissões (quem pode ler ou editar).</span></li>
+                    <li><span class="cmd-tag">chown</span> <span>Muda o usuário dono do arquivo.</span></li>
+                    <li><span class="cmd-tag">man</span> <span>Abre o manual ensinando a usar determinado comando.</span></li>
+                    <li><span class="cmd-tag">history</span> <span>Mostra a lista de tudo que você já digitou.</span></li>
+                    <li><span class="cmd-tag">sudo</span> <span>Executa o comando com poderes de administrador.</span></li>
+                    <li><span class="cmd-tag">apt</span> <span>Baixa, instala e atualiza programas.</span></li>
+                    <li><span class="cmd-tag">tar</span> <span>Junta vários arquivos num pacote só (.tar).</span></li>
+                    <li><span class="cmd-tag">gzip</span> <span>Comprime o arquivo para ele ocupar menos espaço.</span></li>
+                    <li><span class="cmd-tag">unzip</span> <span>Extrai arquivos de um pacote .zip.</span></li>
+                    <li><span class="cmd-tag">df</span> <span>Mostra o espaço livre e ocupado no HD.</span></li>
+                    <li><span class="cmd-tag">du</span> <span>Mostra o tamanho exato de uma pasta ou arquivo.</span></li>
+                    <li><span class="cmd-tag">top</span> <span>Mostra o uso do Processador e Memória RAM ao vivo.</span></li>
+                    <li><span class="cmd-tag">ps</span> <span>Mostra os programas rodando no fundo.</span></li>
                 </ul>
 
                 <div class="glossary-category">10 Comandos de Rede</div>
                 <ul class="glossary-list">
-                    <li><code>ping</code>: Testa a conexão de internet com um destino.</li>
-                    <li><code>ip</code>: Mostra configurações de rede e endereço IP.</li>
-                    <li><code>ss</code>: Exibe conexões e portas abertas.</li>
-                    <li><code>traceroute</code>: Mostra a rota do pacote até o site.</li>
-                    <li><code>curl</code>: Acessa e transfere dados de uma URL.</li>
-                    <li><code>wget</code>: Faz download de arquivos da internet.</li>
-                    <li><code>nslookup</code>: Consulta o IP por trás de um domínio.</li>
-                    <li><code>dig</code>: Consulta detalhada aos servidores DNS.</li>
-                    <li><code>ssh</code>: Acesso remoto seguro a outro computador.</li>
-                    <li><code>ufw</code>: Gerencia o firewall do sistema.</li>
+                    <li><span class="cmd-tag">ping</span> <span>Testa se a internet está funcionando conversando com um site.</span></li>
+                    <li><span class="cmd-tag">ip</span> <span>Mostra configurações de rede e o seu endereço IP.</span></li>
+                    <li><span class="cmd-tag">ss</span> <span>Mostra conexões de rede e portas abertas no PC.</span></li>
+                    <li><span class="cmd-tag">traceroute</span> <span>Rastreia a rota da sua internet até chegar no site.</span></li>
+                    <li><span class="cmd-tag">curl</span> <span>Baixa informações e códigos HTML de um site.</span></li>
+                    <li><span class="cmd-tag">wget</span> <span>Faz o download de um arquivo da internet.</span></li>
+                    <li><span class="cmd-tag">nslookup</span> <span>Descobre qual é o endereço IP escondido num site.</span></li>
+                    <li><span class="cmd-tag">dig</span> <span>Faz uma pesquisa técnica detalhada nos servidores DNS.</span></li>
+                    <li><span class="cmd-tag">ssh</span> <span>Conecta de forma segura para acessar outro PC de longe.</span></li>
+                    <li><span class="cmd-tag">ufw</span> <span>Controla o Firewall (sistema de segurança e bloqueio).</span></li>
                 </ul>
             </div>
         </div>
     </div>
 
     <script>
-        let virtualFileSystem = ['projeto_escola.html', 'estilos.css', 'documentos']; 
+        let virtualFileSystem = ['documentos', 'projeto_escola.html', 'estilos.css']; 
         let commandHistory = []; 
         let currentPath = "~"; 
         
@@ -156,53 +197,59 @@
         const termBody = document.getElementById('term-body');
         const liveLogList = document.getElementById('live-log');
         const promptPath = document.getElementById('prompt-path');
+        const btnClearLog = document.getElementById('btn-clear-log');
 
-        // Dicionário de dicas que vão aparecer no terminal
+        btnClearLog.addEventListener('click', function() {
+            liveLogList.innerHTML = '';
+            commandHistory = [];
+            addAuditLog("SISTEMA", "Log de auditoria limpo.");
+        });
+
         const dicDicas = {
-            'ls': 'Lista os arquivos e pastas que estão no diretório atual.',
-            'cd': 'Entra ou sai de pastas (navegação).',
-            'pwd': 'Mostra o caminho completo da pasta onde você está agora.',
-            'mkdir': 'Cria uma nova pasta (diretório).',
-            'rmdir': 'Apaga uma pasta (desde que ela esteja vazia).',
-            'rm': 'Apaga arquivos.',
-            'cp': 'Copia arquivos ou pastas de um lugar para outro.',
-            'mv': 'Move arquivos de lugar ou serve para renomear um arquivo.',
-            'touch': 'Cria um arquivo vazio rapidinho.',
-            'cat': 'Lê o conteúdo de um arquivo e joga tudo na tela.',
-            'less': 'Lê arquivos grandes, permitindo rolar a página.',
-            'head': 'Mostra apenas as 10 primeiras linhas de um arquivo.',
-            'tail': 'Mostra as 10 últimas linhas de um arquivo.',
-            'grep': 'Procura por uma palavra específica dentro de um texto ou arquivo.',
-            'find': 'Busca por arquivos escondidos ou perdidos no computador.',
-            'chmod': 'Muda as permissões do arquivo.',
-            'chown': 'Muda quem é o dono (proprietário) do arquivo.',
-            'echo': 'Imprime uma palavra ou frase na tela.',
-            'man': 'Abre o manual de instruções de outro comando.',
-            'history': 'Mostra a lista de tudo que você já digitou no terminal.',
-            'clear': 'Limpa a tela quando o terminal está muito poluído.',
-            'sudo': 'Dá poderes de administrador/root para executar um comando.',
-            'apt': 'Serve para instalar, atualizar ou apagar programas.',
-            'tar': 'Junta vários arquivos em um pacote só.',
-            'gzip': 'Compacta um arquivo para ele ocupar menos espaço.',
-            'unzip': 'Descompacta arquivos com final .zip.',
-            'df': 'Mostra quanto espaço livre e ocupado tem no HD/SSD.',
-            'du': 'Mostra qual o tamanho exato de uma pasta ou arquivo.',
-            'top': 'Mostra o consumo de memória e processador em tempo real.',
-            'ps': 'Mostra quais programas (processos) estão rodando no fundo.',
-            'ping': 'Dispara pacotes para ver se a internet está funcionando.',
-            'ip': 'Mostra qual é o seu endereço IP.',
-            'ss': 'Mostra todas as portas abertas no seu computador.',
-            'traceroute': 'Mostra o caminho que a sua internet faz até um site.',
-            'curl': 'Acessa um site ou baixa dados direto pelo terminal.',
-            'wget': 'Ferramenta clássica para fazer download de arquivos da internet.',
-            'nslookup': 'Descobre qual é o número IP por trás do nome de um site.',
-            'dig': 'Investiga detalhes de servidores de internet (DNS).',
-            'ssh': 'Permite acessar e controlar outro computador remotamente.',
-            'ufw': 'Gerencia o firewall (bloqueio de acessos) do sistema.',
-            'help': 'Exibe a ajuda do sistema simulado.'
+            'ls': 'Mostra o que tem dentro da pasta atual.',
+            'cd': 'Entra ou sai de uma pasta.',
+            'pwd': 'Mostra em qual pasta você está agora.',
+            'mkdir': 'Cria uma nova pasta.',
+            'rmdir': 'Apaga uma pasta vazia.',
+            'rm': 'Apaga um arquivo.',
+            'cp': 'Copia um arquivo.',
+            'mv': 'Move ou troca o nome de um arquivo.',
+            'touch': 'Cria um arquivo em branco.',
+            'cat': 'Mostra o texto que está dentro do arquivo.',
+            'less': 'Abre o arquivo para leitura (dá para rolar a tela).',
+            'head': 'Mostra o começo do arquivo.',
+            'tail': 'Mostra o final do arquivo.',
+            'grep': 'Procura uma palavra dentro do arquivo.',
+            'find': 'Pesquisa por arquivos no computador.',
+            'chmod': 'Muda as permissões (quem pode ler/editar).',
+            'chown': 'Muda o dono do arquivo.',
+            'echo': 'Escreve na tela o que você digitou.',
+            'man': 'Abre o manual ensinando a usar o comando.',
+            'history': 'Mostra o histórico dos comandos digitados.',
+            'clear': 'Limpa a tela do terminal.',
+            'sudo': 'Te dá poderes de administrador.',
+            'apt': 'Instala e atualiza programas.',
+            'tar': 'Junta vários arquivos num pacote só.',
+            'gzip': 'Comprime o arquivo para ele ficar menor.',
+            'unzip': 'Extrai arquivos de um pacote .zip.',
+            'df': 'Mostra o espaço livre no HD.',
+            'du': 'Mostra o tamanho de uma pasta ou arquivo.',
+            'top': 'Mostra o uso do Processador e Memória ao vivo.',
+            'ps': 'Mostra os programas que estão rodando agora.',
+            'ping': 'Testa se a sua internet está funcionando.',
+            'ip': 'Mostra o seu endereço IP.',
+            'ss': 'Mostra as portas abertas no computador.',
+            'traceroute': 'Mostra a rota da sua internet até o site.',
+            'curl': 'Baixa informações de um site no formato de texto.',
+            'wget': 'Faz o download de um arquivo da internet.',
+            'nslookup': 'Descobre qual é o IP de um site.',
+            'dig': 'Faz uma pesquisa detalhada no servidor de internet (DNS).',
+            'ssh': 'Conecta e acessa outro computador de longe.',
+            'ufw': 'Controla o Firewall (sistema de segurança).',
+            'help': 'Lista de ajuda geral.'
         };
 
-        addAuditLog("SISTEMA", "Sessão iniciada. Usuária Estela detectada.");
+        addAuditLog("SISTEMA", "Sessão iniciada. Estela conectada.");
 
         input.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
@@ -214,84 +261,103 @@
         });
 
         function printTerminal(html) {
-            output.innerHTML += `<div style="margin-bottom: 5px;">${html}</div>`;
+            output.innerHTML += `<div class="cmd-block">${html}</div>`;
             termBody.scrollTop = termBody.scrollHeight; 
         }
 
-        // Alterado para registrar sempre com o nome "estela"
         function addAuditLog(user, action) {
             const time = new Date().toLocaleTimeString('pt-BR');
-            const logEntry = `[${time}] ${user}: ${action}`;
-            commandHistory.push(logEntry);
+            const logEntry = `<span>[${time}]</span> <span>${user}: ${action}</span>`;
+            commandHistory.push(`[${time}] ${user}: ${action}`);
             liveLogList.innerHTML += `<li>${logEntry}</li>`;
             liveLogList.parentElement.scrollTop = liveLogList.parentElement.scrollHeight;
         }
 
         function processCommand(cmd) {
-            // Imprime a linha com o nome da estela
-            printTerminal(`<span class="prompt-user">estela@ubuntu-ai-sim</span>:<span class="prompt-dir">${currentPath}</span>$ ${cmd}`);
+            let outputHtml = `<span class="prompt-user">estela@ubuntu-ai-sim</span>:<span class="prompt-dir">${currentPath}</span>$ ${cmd}<br>`;
             addAuditLog("estela", cmd);
 
             const args = cmd.split(' ');
             const mainCmd = args[0].toLowerCase();
+            const param1 = args[1] || 'arquivo_teste';
 
-            // === AQUI ACONTECE A MÁGICA DA DICA ===
             if (dicDicas[mainCmd]) {
-                printTerminal(`<div class="cmd-hint">💡 Comando '${mainCmd}': ${dicDicas[mainCmd]}</div>`);
+                outputHtml += `<div class="cmd-hint">💡 <b>Resumo:</b> ${dicDicas[mainCmd]}</div>`;
             }
 
             switch(mainCmd) {
-                case 'ls': printTerminal(virtualFileSystem.map(f => `<span style="color: #fff;">${f}</span>`).join(' &nbsp;&nbsp; ')); break;
+                case 'ls': 
+                    outputHtml += virtualFileSystem.map(f => f === 'documentos' || f.includes('pasta') || f.includes('aula') || f.includes('apresentacao') ? `<span style="color: var(--accent-blue); font-weight:bold;">${f}</span>` : `<span>${f}</span>`).join(' &nbsp;&nbsp; ');
+                    break;
                 case 'cd': 
-                    if(args[1]) { currentPath = args[1] === ".." ? "~" : `~/${args[1]}`; promptPath.innerText = currentPath; } 
-                    else { currentPath = "~"; promptPath.innerText = currentPath; } break;
-                case 'pwd': printTerminal(`/home/estela${currentPath.replace('~', '')}`); break;
-                case 'whoami': printTerminal('estela'); break;
-                case 'mkdir': if(args[1]) virtualFileSystem.push(`<span style="color: #729fcf; font-weight:bold;">${args[1]}</span>`); else printTerminal('mkdir: falta operando'); break;
-                case 'rmdir': printTerminal(`rmdir: removendo diretório '${args[1] || ''}' (simulado)`); break;
-                case 'rm': if(args[1]) { virtualFileSystem = virtualFileSystem.filter(f => !f.includes(args[1])); printTerminal(`Removido: ${args[1]}`); } else printTerminal('rm: falta operando'); break;
-                case 'cp': printTerminal(`cp: copiado '${args[1] || ''}' para '${args[2] || ''}' (simulado)`); break;
-                case 'mv': printTerminal(`mv: movido/renomeado '${args[1] || ''}' (simulado)`); break;
-                case 'touch': if(args[1]) if(!virtualFileSystem.includes(args[1])) virtualFileSystem.push(args[1]); break;
+                    if(args[1]) { 
+                        if (args[1] === "..") {
+                            currentPath = "~"; promptPath.innerText = currentPath;
+                            outputHtml += `✔ Voltando para a pasta principal (~).`;
+                        } else {
+                            currentPath = `~/${args[1]}`; promptPath.innerText = currentPath;
+                            outputHtml += `✔ Entrando na pasta '${args[1]}'.`;
+                        }
+                    } else { 
+                        currentPath = "~"; promptPath.innerText = currentPath; 
+                        outputHtml += `✔ Voltando para a pasta principal (~).`;
+                    } 
+                    break;
+                case 'pwd': outputHtml += `/home/estela${currentPath.replace('~', '')}`; break;
+                case 'whoami': outputHtml += 'estela'; break;
+                case 'mkdir': 
+                    if(args[1]) { virtualFileSystem.push(args[1]); outputHtml += `✔ Diretório '${args[1]}' criado.`; } 
+                    else outputHtml += 'mkdir: falta operando (tente: mkdir novapasta)'; break;
+                case 'rmdir': outputHtml += `✔ Diretório '${param1}' removido.`; break;
+                case 'rm': 
+                    if(args[1]) { virtualFileSystem = virtualFileSystem.filter(f => f !== args[1]); outputHtml += `✔ Arquivo '${args[1]}' apagado.`; } 
+                    else outputHtml += 'rm: falta operando (tente: rm arquivo.txt)'; break;
+                case 'cp': outputHtml += `✔ Arquivo '${param1}' copiado para 'copia_${param1}'.`; break;
+                case 'mv': outputHtml += `✔ Arquivo '${param1}' movido/renomeado.`; break;
+                case 'touch': 
+                    if(args[1] && !virtualFileSystem.includes(args[1])) { virtualFileSystem.push(args[1]); outputHtml += `✔ Arquivo vazio '${args[1]}' criado.`; } 
+                    else if (!args[1]) { outputHtml += 'touch: falta operando (tente: touch novo_arquivo.txt)'; } break;
                 case 'cat': 
-                    if(args[1] === '/var/log/sim_audit.log') commandHistory.forEach(log => printTerminal(`<span style="color: #f8c555;">${log}</span>`));
-                    else printTerminal(`cat: ${args[1] || ''}: Arquivo lido (conteúdo simulado)`); break;
-                case 'less': printTerminal(`Exibindo ${args[1] || 'arquivo'}... (Pressione 'q' para sair da simulação)`); break;
-                case 'head': printTerminal(`==> Mostrando as 10 primeiras linhas de ${args[1] || 'arquivo'} <==`); break;
-                case 'tail': printTerminal(`==> Mostrando as 10 últimas linhas de ${args[1] || 'arquivo'} <==`); break;
-                case 'grep': printTerminal(`grep: buscando padrão em arquivos... (simulado)`); break;
-                case 'find': printTerminal(`. <br>./${virtualFileSystem.join('<br>./')}`); break;
-                case 'chmod': printTerminal(`chmod: permissões de '${args[2] || args[1] || ''}' alteradas (simulado)`); break;
-                case 'chown': printTerminal(`chown: proprietário de '${args[2] || args[1] || ''}' alterado (simulado)`); break;
-                case 'echo': printTerminal(args.slice(1).join(' ')); break;
-                case 'man': printTerminal(`Manual do comando ${args[1] || ''} - (Pressione 'q' para sair)`); break;
-                case 'history': commandHistory.forEach((item, index) => printTerminal(`${index + 1}  ${item.split(': ')[2] || item}`)); break;
-                case 'clear': output.innerHTML = ''; break;
-                case 'sudo': printTerminal(`[sudo] senha para estela: <br>Permissão concedida via IA.`); break;
-                case 'apt': printTerminal(`Lendo listas de pacotes... Pronto<br>Construindo árvore de dependências... Pronto`); break;
-                case 'tar': printTerminal(`tar: compactando/extraindo arquivo (simulado)`); break;
-                case 'gzip': printTerminal(`gzip: arquivo comprimido (simulado)`); break;
-                case 'unzip': printTerminal(`Archive: ${args[1] || 'arquivo.zip'}<br> inflating: arquivo_extraido.txt`); break;
-                case 'df': printTerminal(`Sist. Arq. &nbsp;&nbsp; Tam. Usado Disp. Uso% Montado em<br>/dev/sda1 &nbsp;&nbsp;&nbsp; 50G &nbsp; 20G &nbsp; 30G &nbsp; 40% /`); break;
-                case 'du': printTerminal(`4,0K &nbsp;&nbsp; ./documentos<br>12K &nbsp;&nbsp; .`); break;
-                case 'top': printTerminal(`top - 14:00:01 up 1 day, 1 user, load average: 0.00, 0.01<br>Tasks: 1 total, 1 running, 0 sleeping`); break;
-                case 'ps': printTerminal(`PID TTY &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TIME CMD<br> 12 pts/0 &nbsp;&nbsp; 00:00:00 bash`); break;
+                    if(args[1] === '/var/log/sim_audit.log') outputHtml += commandHistory.join('<br>');
+                    else outputHtml += `Conteúdo do arquivo ${param1}:<br><i>"Este é um texto simulado gerado pelo sistema para fins educacionais."</i>`; break;
+                case 'less': outputHtml += `<i>Mostrando conteúdo paginado de ${param1}...</i><br>Linha 1...<br>Linha 2...<br><span style="background:#fff; color:#000;">: (Pressione 'q' para sair)</span>`; break;
+                case 'head': outputHtml += `==> Primeiras 10 linhas de ${param1} <==<br>1. Introdução<br>2. Configurações iniciais...`; break;
+                case 'tail': outputHtml += `==> Últimas 10 linhas de ${param1} <==<br>199. Sistema desligado<br>200. [FIM DO ARQUIVO]`; break;
+                case 'grep': outputHtml += `Buscando em ${param1}:<br><span style="color:#ff5f56; font-weight:bold;">Erro fatal</span> encontrado na linha 42.`; break;
+                case 'find': outputHtml += `. <br>./${virtualFileSystem.join('<br>./')}<br>./oculto/.bashrc`; break;
+                case 'chmod': outputHtml += `✔ Permissões de '${param1}' alteradas para -rwxr-xr-x.`; break;
+                case 'chown': outputHtml += `✔ Proprietário de '${param1}' alterado para 'estela'.`; break;
+                case 'echo': outputHtml += args.slice(1).join(' ') || 'Olá, mundo!'; break;
+                case 'man': outputHtml += `<b>MANUAL:</b> ${param1}<br>DESCRIÇÃO: Comando utilizado para gerenciar operações básicas do sistema...`; break;
+                case 'history': outputHtml += commandHistory.map((item, i) => `${i + 1}  ${item.split(': ')[2] || item}`).join('<br>'); break;
+                case 'clear': output.innerHTML = ''; return; // Pula a inserção para realmente limpar
+                case 'sudo': outputHtml += `[sudo] password for estela: <br><i>Acesso root concedido temporariamente.</i>`; break;
+                case 'apt': outputHtml += `Lendo listas de pacotes... Pronto<br>Construindo árvore de dependências...<br>Os pacotes a seguir serão atualizados: python3, curl<br>Atualização concluída com sucesso.`; break;
+                case 'tar': outputHtml += `✔ Arquivo empacotado: ${param1}.tar.gz criado.`; break;
+                case 'gzip': outputHtml += `✔ Arquivo comprimido para ${param1}.gz (Tamanho reduzido em 60%).`; break;
+                case 'unzip': outputHtml += `Archive: ${param1}.zip<br>  inflating: arquivo.txt<br>✔ Descompactação concluída.`; break;
+                case 'df': outputHtml += `Sist. Arq. &nbsp;&nbsp;&nbsp; Tam. &nbsp; Usado &nbsp; Disp. &nbsp; Uso% &nbsp; Montado em<br>/dev/nvme &nbsp;&nbsp; 500G &nbsp; 120G &nbsp;&nbsp; 380G &nbsp;&nbsp; 24% &nbsp;&nbsp; /`; break;
+                case 'du': outputHtml += `4,0K &nbsp;&nbsp; ./documentos<br>12K &nbsp;&nbsp; ./imagens<br><b>16K &nbsp;&nbsp; . (Total)</b>`; break;
+                case 'top': outputHtml += `top - 14:00:01 up 2 days, 1 user, load average: 0.42<br>Tasks: 1 total, 1 running, 85 sleeping<br>%Cpu(s): 2.3 us, 1.0 sy, 96.7 id<br>MiB Mem : 8192 total, 4096 free, 2048 used`; break;
+                case 'ps': outputHtml += `PID &nbsp;&nbsp; TTY &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TIME &nbsp;&nbsp;&nbsp; CMD<br> 125 &nbsp; pts/0 &nbsp; 00:00:00 &nbsp; bash<br> 902 &nbsp; pts/0 &nbsp; 00:00:00 &nbsp; ps`; break;
 
-                case 'ping': printTerminal(`PING ${args[1] || '8.8.8.8'} 56(84) bytes of data.<br>64 bytes from ${args[1] || '8.8.8.8'}: icmp_seq=1 ttl=64 time=12.3 ms`); break;
-                case 'ip': printTerminal('1: lo: &lt;LOOPBACK,UP&gt; mtu 65536<br> inet 127.0.0.1/8 scope host lo<br>2: eth0: &lt;BROADCAST,UP&gt; mtu 1500<br> inet 192.168.1.100/24 global dynamic'); break;
-                case 'ss': printTerminal(`Netid &nbsp; State &nbsp; Recv-Q Send-Q Local Address:Port Peer Address:Port<br>tcp &nbsp;&nbsp;&nbsp; ESTAB &nbsp; 0 &nbsp;&nbsp;&nbsp;&nbsp; 0 &nbsp;&nbsp;&nbsp;&nbsp; 192.168.1.100:22 &nbsp; 10.0.0.5:54321`); break;
-                case 'traceroute': printTerminal(`traceroute to ${args[1] || 'google.com'}, 30 hops max<br> 1 &nbsp; 192.168.1.1 (192.168.1.1) 2.1 ms`); break;
-                case 'curl': printTerminal(`&lt;html&gt;&lt;body&gt;Resposta de ${args[1] || 'URL'} interceptada pela IA.&lt;/body&gt;&lt;/html&gt;`); break;
-                case 'wget': printTerminal(`Resolvendo ${args[1] || 'url'}... conectado.<br>Requerimento HTTP enviado... 200 OK<br>Salvo em: 'arquivo_baixado'`); break;
-                case 'nslookup': printTerminal(`Server: &nbsp;&nbsp; 8.8.8.8<br>Address: &nbsp; 8.8.8.8#53<br><br>Non-authoritative answer:<br>Name: &nbsp; ${args[1] || 'site.com'}<br>Address: 172.217.16.14`); break;
-                case 'dig': printTerminal(`;; ANSWER SECTION:<br>${args[1] || 'site.com'}. &nbsp;&nbsp; 300 IN A 172.217.16.14`); break;
-                case 'ssh': printTerminal(`The authenticity of host '${args[1] || 'servidor'}' can't be established.<br>Warning: Permanently added.<br>estela@${args[1] || 'servidor'} password:`); break;
-                case 'ufw': printTerminal(`Status: active<br><br>To &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Action &nbsp;&nbsp;&nbsp;&nbsp; From<br>-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ------ &nbsp;&nbsp;&nbsp;&nbsp; ----<br>22/tcp &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ALLOW &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Anywhere`); break;
+                case 'ping': outputHtml += `PING ${param1} (142.250.190.46) 56(84) bytes of data.<br>64 bytes from ${param1}: icmp_seq=1 time=12.3 ms<br>64 bytes from ${param1}: icmp_seq=2 time=11.8 ms<br>--- ${param1} ping statistics ---<br>2 packets transmitted, 2 received, 0% packet loss`; break;
+                case 'ip': outputHtml += `1: lo: &lt;LOOPBACK,UP&gt; mtu 65536<br>    inet 127.0.0.1/8 scope host lo<br>2: eth0: &lt;BROADCAST,MULTICAST,UP&gt; mtu 1500<br>    inet <b>192.168.1.105/24</b> brd 192.168.1.255 scope global eth0`; break;
+                case 'ss': outputHtml += `Netid &nbsp; State &nbsp;&nbsp; Local Address:Port &nbsp; Peer Address:Port<br>tcp &nbsp;&nbsp;&nbsp; ESTAB &nbsp;&nbsp; 192.168.1.105:22 &nbsp;&nbsp;&nbsp; 10.0.0.5:54321`; break;
+                case 'traceroute': outputHtml += `traceroute to ${param1} (142.250.190.46), 30 hops max<br> 1 &nbsp; router.local (192.168.1.1)  2.134 ms<br> 2 &nbsp; isp-gateway (10.10.10.1)  15.342 ms<br> 3 &nbsp; dns.google (142.250.190.46)  22.105 ms`; break;
+                case 'curl': outputHtml += `&lt;!DOCTYPE html&gt;<br>&lt;html&gt;&lt;body&gt;Conexão HTTP 200 OK via curl!&lt;/body&gt;&lt;/html&gt;`; break;
+                case 'wget': outputHtml += `Resolvendo ${param1}... conectado.<br>Tamanho: 1.2M [application/zip]<br>arquivo.zip &nbsp; 100%[============>] &nbsp; 1.20M  5.45MB/s<br>✔ Download concluído.`; break;
+                case 'nslookup': outputHtml += `Server: &nbsp;&nbsp;&nbsp; 8.8.8.8<br>Non-authoritative answer:<br>Name: &nbsp;&nbsp; ${param1}<br>Address: 142.250.190.46`; break;
+                case 'dig': outputHtml += `;; ANSWER SECTION:<br>${param1}. &nbsp;&nbsp; 300 &nbsp; IN &nbsp; A &nbsp; 142.250.190.46<br>;; Query time: 14 msec`; break;
+                case 'ssh': outputHtml += `estela@${param1}'s password: <br><i>Conexão SSH estabelecida. Bem-vindo!</i>`; break;
+                case 'ufw': outputHtml += `Status: active<br>To &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Action &nbsp;&nbsp;&nbsp;&nbsp; From<br>-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ------ &nbsp;&nbsp;&nbsp;&nbsp; ----<br>22/tcp &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ALLOW &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Anywhere<br>80/tcp &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ALLOW &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Anywhere`; break;
 
-                case 'help': printTerminal(`Acesse o Dicionário de Comandos no painel ao lado para ver a lista completa.`); break;
+                case 'help': outputHtml += `Acesse o Dicionário de Comandos no painel ao lado para ver a lista.`; break;
                 
-                default: printTerminal(`bash: ${mainCmd}: comando não encontrado`);
+                default: outputHtml += `bash: ${mainCmd}: comando não encontrado`;
             }
+
+            printTerminal(outputHtml);
         }
     </script>
 </body>
