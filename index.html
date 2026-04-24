@@ -45,9 +45,9 @@
         .terminal-body { padding: 25px; flex-grow: 1; overflow-y: auto; font-family: 'Fira Code', monospace; font-size: 14.5px; color: var(--text-main); line-height: 1.6; }
         .prompt-user { color: var(--accent-green); font-weight: 600; }
         .prompt-dir { color: var(--accent-blue); font-weight: 600; }
-        .input-row { display: flex; align-items: center; margin-top: 15px; }
-        #cmd-input { background: transparent; border: none; color: #fff; font-family: inherit; font-size: inherit; font-weight: 500; flex-grow: 1; margin-left: 10px; outline: none; }
-        .cmd-block { margin-bottom: 15px; }
+        .input-row { display: flex; align-items: center; margin-top: 15px; flex-wrap: wrap; }
+        #cmd-input { background: transparent; border: none; color: #fff; font-family: inherit; font-size: inherit; font-weight: 500; flex-grow: 1; margin-left: 10px; outline: none; min-width: 150px; }
+        .cmd-block { margin-bottom: 15px; word-break: break-all; }
 
         /* PAINÉIS LATERAIS (VIDRO) */
         .info-panel { display: flex; flex-direction: column; gap: 25px; height: 620px;}
@@ -88,6 +88,57 @@
         @keyframes fadeInDown { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes slideIn { from { opacity: 0; transform: translateX(-5px); } to { opacity: 1; transform: translateX(0); } }
         ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; } ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
+
+        /* =========================================
+           MODO RESPONSIVO (TABLETS E CELULARES) 
+           ========================================= */
+        
+        /* Telas médias (Tablets e notebooks pequenos) */
+        @media (max-width: 1024px) {
+            .dashboard {
+                grid-template-columns: 1fr; /* Muda para 1 coluna apenas (empilhado) */
+            }
+            .terminal-container {
+                height: 500px; /* Reduz um pouco a altura do terminal */
+            }
+            .info-panel {
+                height: auto; /* Permite que os painéis cresçam conforme o conteúdo */
+                gap: 15px;
+            }
+            .card-glossary {
+                max-height: 500px; /* Impede que o dicionário fique gigante na tela */
+            }
+        }
+
+        /* Telas pequenas (Celulares) */
+        @media (max-width: 600px) {
+            body {
+                padding: 15px 10px; /* Menos borda nas laterais */
+            }
+            .header h1 {
+                font-size: 2rem; /* Título menor */
+            }
+            .header p {
+                font-size: 0.95rem;
+            }
+            .terminal-container {
+                height: 400px; /* Terminal menor para caber na tela do celular */
+            }
+            .terminal-body {
+                padding: 15px;
+                font-size: 13px; /* Fonte do código ligeiramente menor */
+            }
+            .glass-card {
+                padding: 15px; /* Menos respiro interno nos cartões */
+            }
+            .card-audit {
+                height: 160px;
+            }
+            .btn-limpar {
+                top: 15px;
+                right: 15px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -132,7 +183,7 @@
             <div class="glass-card card-glossary">
                 <h3>📖 Dicionário de Comandos (40)</h3>
                 
-                <div class="glossary-category cat-top5"></div>
+                <div class="glossary-category cat-top5">⭐ Roteiro: Top 5 Apresentação</div>
                 <ul class="glossary-list">
                     <li><span class="cmd-tag tag-top5">pwd</span> <span><b>Localização:</b> Mostra em qual pasta você está.</span></li>
                     <li><span class="cmd-tag tag-top5">mkdir</span> <span><b>Criação:</b> Cria uma nova pasta no sistema.</span></li>
